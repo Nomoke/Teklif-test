@@ -162,62 +162,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/offers/active/by-properties": {
-            "post": {
-                "description": "Retrieve a list of active offers based on property IDs that are approved and not expired",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "offers"
-                ],
-                "summary": "Get active offers by property IDs",
-                "parameters": [
-                    {
-                        "description": "List of property IDs",
-                        "name": "property_ids",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/teklif_internal_api_models.PropertyIDsReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of active offers",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/teklif_internal_api_models.OfferResp"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/http.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "No offers found",
-                        "schema": {
-                            "$ref": "#/definitions/http.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/http.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/offers/attach": {
+        "/offers/attach-properties": {
             "post": {
                 "description": "Attach properties to a specific offer by their IDs",
                 "consumes": [
@@ -288,6 +233,61 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            }
+        },
+        "/offers/properties": {
+            "post": {
+                "description": "Retrieve a list of active offers based on property IDs that are approved and not expired",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Get active offers by property IDs",
+                "parameters": [
+                    {
+                        "description": "List of property IDs",
+                        "name": "property_ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/teklif_internal_api_models.PropertyIDsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of active offers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/teklif_internal_api_models.OfferResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No offers found",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/offers/week-expired": {
@@ -466,6 +466,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "property_ids": {
+                    "description": "PropertyIDs list of UUIDs\n@example [\"123e4567-e89b-12d3-a456-426614174001\", \"123e4567-e89b-12d3-a456-426614174002\"]",
                     "type": "array",
                     "items": {
                         "type": "string"

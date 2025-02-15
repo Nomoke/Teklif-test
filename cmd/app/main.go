@@ -34,10 +34,8 @@ func main() {
 
 	offerService := offersrv.NewService(repo.New(pool))
 
-	// Запуск воркера для автоматического снятия просроченных предложений
 	go offerService.StartOfferExpiryWorker(ctx)
 
-	// Запуск API
 	r, err := api.New(logger, offerService)
 	if err != nil {
 		log.Fatal(err)

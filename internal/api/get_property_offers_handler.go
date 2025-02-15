@@ -18,7 +18,7 @@ import (
 // @Failure 400 {object} http.ErrorResponse "Bad request error"
 // @Failure 404 {object} http.ErrorResponse "No offers found"
 // @Failure 500 {object} http.ErrorResponse "Internal server error"
-// @Router /offers/properties[post]
+// @Router /offers/properties [post]
 func (h *handler) GetActiveOffersByProperties(c *gin.Context) {
 	var req models.PropertyIDsReq
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -55,6 +55,9 @@ definitions:
   teklif_internal_api_models.PropertyIDsReq:
     properties:
       property_ids:
+        description: |-
+          PropertyIDs list of UUIDs
+          @example ["123e4567-e89b-12d3-a456-426614174001", "123e4567-e89b-12d3-a456-426614174002"]
         items:
           type: string
         type: array
@@ -197,44 +200,7 @@ paths:
       summary: Get active offers
       tags:
       - offers
-  /offers/active/by-properties:
-    post:
-      consumes:
-      - application/json
-      description: Retrieve a list of active offers based on property IDs that are
-        approved and not expired
-      parameters:
-      - description: List of property IDs
-        in: body
-        name: property_ids
-        required: true
-        schema:
-          $ref: '#/definitions/teklif_internal_api_models.PropertyIDsReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: List of active offers
-          schema:
-            items:
-              $ref: '#/definitions/teklif_internal_api_models.OfferResp'
-            type: array
-        "400":
-          description: Bad request error
-          schema:
-            $ref: '#/definitions/http.ErrorResponse'
-        "404":
-          description: No offers found
-          schema:
-            $ref: '#/definitions/http.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/http.ErrorResponse'
-      summary: Get active offers by property IDs
-      tags:
-      - offers
-  /offers/attach:
+  /offers/attach-properties:
     post:
       consumes:
       - application/json
@@ -280,6 +246,43 @@ paths:
       - application/json
       responses: {}
       summary: Expire offers by property IDs
+      tags:
+      - offers
+  /offers/properties:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve a list of active offers based on property IDs that are
+        approved and not expired
+      parameters:
+      - description: List of property IDs
+        in: body
+        name: property_ids
+        required: true
+        schema:
+          $ref: '#/definitions/teklif_internal_api_models.PropertyIDsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of active offers
+          schema:
+            items:
+              $ref: '#/definitions/teklif_internal_api_models.OfferResp'
+            type: array
+        "400":
+          description: Bad request error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "404":
+          description: No offers found
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Get active offers by property IDs
       tags:
       - offers
   /offers/week-expired:
