@@ -6,6 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Approve an offer
+// @Description Approve the offer with the specified ID
+// @Tags offers
+// @Accept  json
+// @Produce  json
+// @Param offerID path string true "Offer ID"
+// @Router /offers/{offerID}/approve [post]
 func (h *handler) ApproveOffer(c *gin.Context) {
 	offerID, err := OfferID(c)
 	if err != nil {

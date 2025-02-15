@@ -11,8 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const UploadDir = "./uploads/"
-
 func SaveFiles(c *gin.Context, files []*multipart.FileHeader) ([]string, error) {
 	var filePaths []string
 
@@ -27,14 +25,22 @@ func SaveFiles(c *gin.Context, files []*multipart.FileHeader) ([]string, error) 
 	return filePaths, nil
 }
 
-// сохраняет одиночный файл.
 func saveFileLocally(c *gin.Context, file *multipart.FileHeader) (string, error) {
-	if err := os.MkdirAll(UploadDir, os.ModePerm); err != nil {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	uploadDir := filepath.Join(cwd, "uploads")
+
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
 		return "", errors.WithStack(err)
 	}
 
 	fileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), filepath.Ext(file.Filename))
-	savePath := filepath.Join(UploadDir, fileName)
+	savePath := filepath.Join(uploadDir, fileName)
+
+	fmt.Println("Saving file to path:", savePath)
 
 	if err := c.SaveUploadedFile(file, savePath); err != nil {
 		return "", errors.WithStack(err)

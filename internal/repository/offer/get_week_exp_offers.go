@@ -2,6 +2,7 @@ package offer
 
 import (
 	"context"
+	"teklif/internal/api/models"
 	"teklif/internal/models/domain"
 
 	"github.com/pkg/errors"
@@ -24,10 +25,10 @@ func (r *Repo) GetWeekExpiredOffers(ctx context.Context) ([]domain.Offer, error)
 			media
 		FROM special_offers
 		WHERE expiry_date BETWEEN NOW() - INTERVAL '7 days' AND NOW() 
-		AND status = 'expired';
+		AND status = $1;
 	`
 
-	rows, err := r.pool.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query, models.OfferStatusExpired)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

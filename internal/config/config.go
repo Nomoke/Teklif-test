@@ -28,7 +28,7 @@ type Logger struct {
 
 func New() (Config, error) {
 	if err := godotenv.Load(); err != nil {
-		return Config{}, fmt.Errorf("failed to load compose.env file: %w", err)
+		return Config{}, fmt.Errorf("failed to load .env file: %w", err)
 	}
 
 	var cfg Config

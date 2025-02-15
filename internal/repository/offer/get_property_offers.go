@@ -2,6 +2,7 @@ package offer
 
 import (
 	"context"
+	"teklif/internal/api/models"
 	"teklif/internal/models/domain"
 
 	"github.com/google/uuid"
@@ -25,10 +26,10 @@ func (r *Repo) GetActiveOffersByProperties(ctx context.Context, propertyIDs []uu
 			so.media
 		FROM special_offers so
 		JOIN offer_properties op ON so.id = op.offer_id
-		WHERE op.property_id = ANY($1) AND so.status = 'approved' AND so.expiry_date > NOW();
+		WHERE op.property_id = ANY($1) AND so.status = $2 AND so.expiry_date > NOW();
 	`
 
-	rows, err := r.pool.Query(ctx, query, propertyIDs)
+	rows, err := r.pool.Query(ctx, query, propertyIDs, models.OfferStatusApproved)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

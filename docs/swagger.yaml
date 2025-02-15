@@ -1,0 +1,316 @@
+definitions:
+  http.ErrorResponse:
+    properties:
+      error: {}
+      status:
+        type: string
+    type: object
+  teklif_internal_api_models.AttachOfferPropertiesReq:
+    properties:
+      offer_id:
+        description: |-
+          OfferID UUID
+          @example "123e4567-e89b-12d3-a456-426614174000"
+        type: string
+      property_ids:
+        description: |-
+          PropertyIDs list of UUIDs
+          @example ["123e4567-e89b-12d3-a456-426614174001", "123e4567-e89b-12d3-a456-426614174002"]
+        items:
+          type: string
+        type: array
+    required:
+    - offer_id
+    - property_ids
+    type: object
+  teklif_internal_api_models.OfferResp:
+    properties:
+      commission_agency:
+        type: number
+      commission_agent:
+        type: number
+      description:
+        type: string
+      discount:
+        type: number
+      expiry_date:
+        type: string
+      id:
+        type: string
+      media:
+        items:
+          type: string
+        type: array
+      price_cash:
+        type: number
+      price_installment:
+        type: number
+      status:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  teklif_internal_api_models.PropertyIDsReq:
+    properties:
+      property_ids:
+        items:
+          type: string
+        type: array
+    required:
+    - property_ids
+    type: object
+info:
+  contact: {}
+paths:
+  /offers:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create a new offer with media files (uploaded as form-data)
+      parameters:
+      - description: Offer Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Offer Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Offer Type
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: Offer Expiry Date
+        format: date
+        in: formData
+        name: expiry_date
+        required: true
+        type: string
+      - description: Commission Agent
+        in: formData
+        name: commission_agent
+        type: number
+      - description: Commission Agency
+        in: formData
+        name: commission_agency
+        type: number
+      - description: Discount
+        in: formData
+        name: discount
+        type: number
+      - description: Price Installment
+        in: formData
+        name: price_installment
+        type: number
+      - description: Price Cash
+        in: formData
+        name: price_cash
+        type: number
+      - description: Media files
+        in: formData
+        name: media
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Offer created successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Create a new offer
+      tags:
+      - offers
+  /offers/{offerID}/approve:
+    post:
+      consumes:
+      - application/json
+      description: Approve the offer with the specified ID
+      parameters:
+      - description: Offer ID
+        in: path
+        name: offerID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Approve an offer
+      tags:
+      - offers
+  /offers/{offerID}/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an offer by its ID
+      parameters:
+      - description: ID of the offer to be deleted
+        in: path
+        name: offer_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete an offer
+      tags:
+      - offers
+  /offers/active:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of active offers that are approved and not expired
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of active offers
+          schema:
+            items:
+              $ref: '#/definitions/teklif_internal_api_models.OfferResp'
+            type: array
+        "400":
+          description: Bad request error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "404":
+          description: No offers found
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Get active offers
+      tags:
+      - offers
+  /offers/active/by-properties:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve a list of active offers based on property IDs that are
+        approved and not expired
+      parameters:
+      - description: List of property IDs
+        in: body
+        name: property_ids
+        required: true
+        schema:
+          $ref: '#/definitions/teklif_internal_api_models.PropertyIDsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of active offers
+          schema:
+            items:
+              $ref: '#/definitions/teklif_internal_api_models.OfferResp'
+            type: array
+        "400":
+          description: Bad request error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "404":
+          description: No offers found
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Get active offers by property IDs
+      tags:
+      - offers
+  /offers/attach:
+    post:
+      consumes:
+      - application/json
+      description: Attach properties to a specific offer by their IDs
+      parameters:
+      - description: Request body for attaching properties
+        in: body
+        name: offer
+        required: true
+        schema:
+          $ref: '#/definitions/teklif_internal_api_models.AttachOfferPropertiesReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Properties successfully attached
+          schema:
+            type: string
+        "400":
+          description: Invalid data
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Attach properties to an offer
+      tags:
+      - offers
+  /offers/expire-properties:
+    post:
+      consumes:
+      - application/json
+      description: Expire all offers associated with the provided property IDs
+      parameters:
+      - description: Request body containing property IDs
+        in: body
+        name: property_ids
+        required: true
+        schema:
+          $ref: '#/definitions/teklif_internal_api_models.PropertyIDsReq'
+      produces:
+      - application/json
+      responses: {}
+      summary: Expire offers by property IDs
+      tags:
+      - offers
+  /offers/week-expired:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of offers that are marked as "Expired" and expired
+        in the last 7 days.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of expired offers
+          schema:
+            items:
+              $ref: '#/definitions/teklif_internal_api_models.OfferResp'
+            type: array
+        "400":
+          description: Bad request error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "404":
+          description: No offers found
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: Get list of offers with "Expired" status that have expired in the last
+        7 days.
+      tags:
+      - offers
+swagger: "2.0"

@@ -2,6 +2,7 @@ package offer
 
 import (
 	"context"
+	"teklif/internal/api/models"
 	"teklif/internal/models/domain"
 
 	"github.com/pkg/errors"
@@ -23,10 +24,10 @@ func (r *Repo) GetActiveOffers(ctx context.Context) ([]domain.Offer, error) {
 			status,
 			media
 		FROM special_offers
-		WHERE status = 'approved' AND expiry_date > NOW();
+		WHERE status = $1 AND expiry_date > NOW();
 `
 
-	rows, err := r.pool.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query, models.OfferStatusApproved)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

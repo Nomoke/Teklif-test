@@ -4,6 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	validatorpkg "teklif/internal/pkg/validator"
+
+	_ "teklif/docs"
+
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type handler struct {
@@ -17,7 +22,6 @@ func New(
 	offer offerService,
 ) (*gin.Engine, error) {
 	v := validatorpkg.New()
-
 	h := &handler{
 		logger:    logger,
 		offer:     offer,
@@ -35,9 +39,13 @@ func New(
 	api.GET("/offers/week-expired", h.GetWeekExpiredOffers)
 	api.GET("/offers/properties", h.GetActiveOffersByProperties)
 	api.POST("/offers/attach-properties", h.AttachPropertyOffer)
-	api.POST("/offers/delete", h.DeleteOffer)
-	api.POST("/offers/approve", h.ApproveOffer)
+	api.POST("/offers/:offerID/delete", h.DeleteOffer)
+	api.POST("/offers/:offerID/approve", h.ApproveOffer)
 	api.POST("/offers/expire-properties", h.ExpirePropertyOffers)
+
+	r.Static("/media", "./uploads")
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return r, nil
 }

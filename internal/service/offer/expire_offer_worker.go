@@ -8,7 +8,7 @@ import (
 
 // запускает воркер для автоматического снятия просроченных предложений
 func (s *Service) StartOfferExpiryWorker(ctx context.Context) {
-	ticker := time.NewTicker(24 * time.Hour)
+	ticker := time.NewTicker(8 * time.Hour)
 	defer ticker.Stop()
 
 	for {
