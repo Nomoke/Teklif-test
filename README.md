@@ -29,6 +29,5 @@
 
 После выполнения всех шагов **API** будет доступно для использования.
 
-**Swagger UI** доступен по следующему адресу:
 
 [**Swagger UI**](http://localhost:8080/swagger/index.html#/offers/post_offers)
